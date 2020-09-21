@@ -1,4 +1,4 @@
-# Swagger generated server
+# Sample REST Bank API for Godfather
 
 ## Overview
 A sample RESTful API made in Node.js using [swagger-codegen](https://github.com/swagger-api/swagger-codegen).
