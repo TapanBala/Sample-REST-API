@@ -1,0 +1,17 @@
+{
+  "name": "bank-api",
+  "version": "0.0.1",
+  "private": true,
+  "description": "This is a sample Bank transaction API",
+  "main": "index.js",
+  "scripts": {
+    "prestart": "npm install",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "~4.16.1",
+    "js-yaml": "^3.3.0",
+    "mysql": "^2.18.1",
+    "swagger-tools": "^0.10.4"
+  }
+}

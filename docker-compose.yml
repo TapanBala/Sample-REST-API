@@ -1,0 +1,40 @@
+version: "3.7"
+
+services:
+  api:
+    image: "node:12"
+    container_name: "api"
+    working_dir: /usr/src/app
+    environment:
+      NODE_ENV: "development"
+      PORT: "8080"
+      DB_HOST: "mysql.dev"
+      DB_USER: "root"
+      DB_PASSWORD: "root"
+      DB: "bank"
+    volumes:
+      - ./:/usr/src/app
+    expose:
+      - 8080
+    ports:
+      - 8080:8080
+    command: "npm start"
+  mysql:
+    build: ./docker/mysql
+    image: bank_mysql:latest
+    container_name: "mysql"
+    restart: "unless-stopped"
+    networks:
+      default:
+        aliases:
+          - "mysql.dev"
+    ports:
+      - "3306:3306"
+    volumes:
+      - sqldata:/var/lib/mysql
+      - ./docker/mysql/logs:/var/log/mysql
+      - $HOME/.bash_history:/root/.bash_history
+
+volumes:
+  sqldata:
+    driver: local

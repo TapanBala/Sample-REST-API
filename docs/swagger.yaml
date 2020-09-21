@@ -1,0 +1,93 @@
+swagger: '2.0'
+host: localhost
+info:
+  title: 'Bank API'
+  version: 0.0.1
+  description: This is a sample Bank transaction API
+  contact:
+    name: API Support
+    email: tapanbala007@gmail.com
+basePath: /v1
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /transactions:
+    post:
+      operationId: createTransaction
+      description: |
+        Create a new transaction to transfer amount from one account to another
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/NewTransaction'
+      responses:
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/ModelError'
+        '201':
+          description: Success
+          schema:
+            $ref: '#/definitions/TransactionSuccess'
+        '404':
+          description: Resource Not Found
+        '422':
+          description: Unprocessable Entity
+      x-swagger-router-controller: 'CreateTransaction'
+
+definitions:
+  NewTransaction:
+    type: object
+    required:
+      - fromAccountId
+      - toAccountId
+      - amount
+    properties:
+      fromAccountId:
+        type: integer
+      toAccountId:
+        type: integer
+      amount:
+        type: integer
+    example:
+      fromAccountId: 1
+      toAccountId: 2
+      amount: 10000
+
+  TransactionSuccess:
+    type: object
+    required:
+      - newSrcBalance
+      - totalDestBalance
+      - transferredAt
+    properties:
+      newSrcBalance:
+        type: integer
+      totalDestBalance:
+        type: integer
+      transferredAt:
+        type: string
+    example:
+      newSrcBalance: 20000
+      totalDestBalance: 10000
+      transferredAt: 'a'
+
+  ModelError:
+    type: object
+    required:
+      - message
+      - code
+    properties:
+      message:
+        type: string
+      code:
+        type: integer
+    example:
+      message: 'Cannot transfer to same account'
+      code: 422
