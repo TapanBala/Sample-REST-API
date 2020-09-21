@@ -31,7 +31,7 @@ open http://localhost:8080/docs
 
 * Config
 
-As a default I have used the following ENV variables, Do update as required.\
+As a default I have used the following ENV variables, Do update as required.
 
 1. PORT: `8080`
 2. DB_HOST: `localhost`
