@@ -1,9 +1,17 @@
 const mysql = require('mysql');
 const {respondWithCode, respondWithError} = require("../../utils/writer");
 
+/**
+ * Used to do transactions of amount between two accounts
+ */
 class Transactions {
+    // DB connection instance
     #connection;
 
+    /**
+     * Transactions constructor
+     * @param config
+     */
     constructor(config) {
         this.#connection = mysql.createConnection(config)
         this.#connection.connect(function(err) {
@@ -11,6 +19,12 @@ class Transactions {
         });
     }
 
+    /**
+     * Fetches account information for given account id
+     *
+     * @param id
+     * @returns {Promise<Array>}
+     */
     #fetchAccount = id => new Promise((resolve, reject) => {
         this.#connection.query('SELECT id, accountType, balance FROM users WHERE id = ?', this.#connection.escape(id), (err, rows) => {
             if (err) {
@@ -20,6 +34,13 @@ class Transactions {
         });
     });
 
+    /**
+     * Updates balance for given account
+     *
+     * @param id
+     * @param balance
+     * @returns {Promise<*>}
+     */
     #updateBalance = (id, balance) => new Promise((resolve, reject) => {
         this.#connection.query('UPDATE users SET balance = ? WHERE id = ?', [balance, id], (err, rows) => {
             if (err) {
@@ -29,6 +50,15 @@ class Transactions {
         });
     });
 
+    /**
+     * Creates a new transaction
+     *
+     * @param sourceId
+     * @param destId
+     * @param amount
+     * @param date
+     * @returns {Promise<*>}
+     */
     #createTransaction = (sourceId, destId, amount, date) => new Promise((resolve, reject) => {
         this.#connection.query('INSERT INTO transactions (source, destination, amount, date) VALUE (?, ?, ?, ?)', [sourceId, destId, amount, date], (err, rows) => {
             if (err) {
@@ -38,6 +68,14 @@ class Transactions {
         });
     });
 
+    /**
+     * Transfers the said amount from source to destination account
+     *
+     * @param source
+     * @param dest
+     * @param amount
+     * @returns {Promise<Object>}
+     */
     create = async (source, dest, amount) => {
         if (source === dest) {
             throw respondWithError(422, 'Source and destination accounts cannot be same.');
@@ -50,6 +88,9 @@ class Transactions {
             throw respondWithError(500, err.toString());
         }
 
+        if (!sourceAccount)
+            throw respondWithError(404, 'Source account not found.')
+
         if (sourceAccount.balance < amount) {
             throw respondWithError(422, 'Not enough funds in source account.');
         }
@@ -59,6 +100,9 @@ class Transactions {
         } catch (err) {
             throw respondWithError(500, err.toString());
         }
+
+        if (!destAccount)
+            throw respondWithError(404, 'Destination account not found.')
 
         if (destAccount.accountType === 'basicSavings' && (destAccount.balance + amount) > 5000000) {
             throw respondWithError(422, 'Destination account limit reached.');

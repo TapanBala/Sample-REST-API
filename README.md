@@ -3,7 +3,9 @@
 ## Overview
 A sample RESTful API made in Node.js using [swagger-codegen](https://github.com/swagger-api/swagger-codegen).
 
-It uses node 12 along with mysql 5.6 for database
+It uses node 12 along with mysql 5.6 for the database.
+
+It is a basic API to showcase bank transactions between members of Corleone Family including some rivals.
 
 ### Running the server
 * MySQL
@@ -47,3 +49,7 @@ For MySQL console run:
 ```
 docker exec -it mysql mysql -uroot -proot bank
 ```
+The API is accessible at `http://localhost:8080` 
+and the API documentation can be viewed via Swagger-ui, 
+available at `http://localhost:8080/docs`
+
